@@ -9,7 +9,21 @@ For more information about the impacts on SEO take a look at http://www.searchen
 
 How do I get started?
 --------------------------------
-TBC
+Once you have added TidyRouting to your project you simply need to replace your traditional route mappings with TidyRoute. For example,
+
+    using TidyRouting
+    ...
+    
+    public static void RegisterRoutes(RouteCollection routes)
+    {
+        routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+    
+        routes.MapTidyRoute( // changed from routes.MapRoute
+            "Default",
+            "{controller}/{action}/{id}",
+            new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+        );
+    }
 
 Where can I get it?
 --------------------------------
