@@ -20,19 +20,18 @@ namespace TidyRouting
 
 			if (path != null)
 			{
-				path.VirtualPath = path.VirtualPath.ToLowerInvariant();
-
 				if (path.VirtualPath != "")
 				{
 					int qsIndex = path.VirtualPath.IndexOf("?", StringComparison.Ordinal);
 
 					if (qsIndex >= 0)
 					{
-						path.VirtualPath = path.VirtualPath.Substring(0, qsIndex) + "/" +
+						path.VirtualPath = path.VirtualPath.Substring(0, qsIndex).ToLowerInvariant() + "/" +
 							path.VirtualPath.Substring(qsIndex);
 					}
 					else
 					{
+						path.VirtualPath = path.VirtualPath.ToLowerInvariant();
 						path.VirtualPath += "/";
 					}
 				}
