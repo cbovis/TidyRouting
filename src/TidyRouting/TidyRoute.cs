@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Web.Routing;
 
 namespace TidyRouting
@@ -20,20 +21,34 @@ namespace TidyRouting
 
 			if (path != null)
 			{
-				if (path.VirtualPath != "")
+				if (path.VirtualPath != String.Empty)
 				{
 					int qsIndex = path.VirtualPath.IndexOf("?", StringComparison.Ordinal);
 
-					if (qsIndex >= 0)
-					{
-						path.VirtualPath = path.VirtualPath.Substring(0, qsIndex).ToLowerInvariant() + "/" +
-							path.VirtualPath.Substring(qsIndex);
-					}
-					else
-					{
-						path.VirtualPath = path.VirtualPath.ToLowerInvariant();
-						path.VirtualPath += "/";
-					}
+				    string newPath = string.Empty;
+
+                    //path
+                    if(qsIndex >= 0)
+                    {
+                        newPath = path.VirtualPath.Substring(0, qsIndex).ToLowerInvariant();
+                    }
+                    else
+                    {
+                        newPath = path.VirtualPath.ToLowerInvariant();
+                    }
+
+                    //trailing slash
+                    if(newPath[newPath.Length - 1] != '/')
+                        newPath += '/';
+                    
+                    //query string
+                    if(qsIndex >= 0)
+                    {
+                        newPath += path.VirtualPath.Substring(qsIndex);
+                    }
+                    
+				    path.VirtualPath = newPath;
+
 				}
 			}
 
