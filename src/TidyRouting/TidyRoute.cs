@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using System.Web.Routing;
 
 namespace TidyRouting
@@ -8,10 +7,13 @@ namespace TidyRouting
     {
         public TidyRoute(string url, IRouteHandler routeHandler)
             : base(url, routeHandler) { }
+
         public TidyRoute(string url, RouteValueDictionary defaults, IRouteHandler routeHandler)
             : base(url, defaults, routeHandler) { }
+
         public TidyRoute(string url, RouteValueDictionary defaults, RouteValueDictionary constraints, IRouteHandler routeHandler)
             : base(url, defaults, constraints, routeHandler) { }
+
         public TidyRoute(string url, RouteValueDictionary defaults, RouteValueDictionary constraints, RouteValueDictionary dataTokens, IRouteHandler routeHandler)
             : base(url, defaults, constraints, dataTokens, routeHandler) { }
 
@@ -19,40 +21,27 @@ namespace TidyRouting
         {
             VirtualPathData path = base.GetVirtualPath(requestContext, values);
 
-            if (path != null)
-            {
-                if (path.VirtualPath != String.Empty)
-                {
-                    int qsIndex = path.VirtualPath.IndexOf("?", StringComparison.Ordinal);
+	        if (path != null && path.VirtualPath != String.Empty)
+	        {
+		        int qsIndex = path.VirtualPath.IndexOf("?", StringComparison.Ordinal);
 
-                    string newPath = string.Empty;
+		        // Lower Case
+		        string newPath = qsIndex >= 0
+			                         ? path.VirtualPath.Substring(0, qsIndex).ToLowerInvariant()
+			                         : path.VirtualPath.ToLowerInvariant();
 
-                    //path
-                    if (qsIndex >= 0)
-                    {
-                        newPath = path.VirtualPath.Substring(0, qsIndex).ToLowerInvariant();
-                    }
-                    else
-                    {
-                        newPath = path.VirtualPath.ToLowerInvariant();
-                    }
+		        // Trailing Slash
+		        if (newPath.Length > 0 && newPath[newPath.Length - 1] != '/')
+			        newPath += '/';
 
-                    //trailing slash
-                    if (newPath.Length > 0 && newPath[newPath.Length - 1] != '/')
-                        newPath += '/';
+		        // Preserve Query String
+		        if (qsIndex >= 0)
+			        newPath += path.VirtualPath.Substring(qsIndex);
 
-                    //query string
-                    if (qsIndex >= 0)
-                    {
-                        newPath += path.VirtualPath.Substring(qsIndex);
-                    }
+		        path.VirtualPath = newPath;
+	        }
 
-                    path.VirtualPath = newPath;
-
-                }
-            }
-
-            return path;
+	        return path;
         }
     }
 }
